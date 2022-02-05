@@ -1,41 +1,44 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flame_texturepacker/flame_texturepacker.dart';
 
 void main() {
+  print('start game');
   runApp(GameWidget(
-    game: MyGame(),
+    game: MySpriteTutorial(),
   ));
 }
 
-class MyGame extends FlameGame {
-  // late SpriteAnimation walk;
-  late SpriteAnimationComponent girl;
+class MySpriteTutorial extends FlameGame {
+  // SpriteAnimationComponent
+  late SpriteAnimationComponent girlWalking;
+  late SpriteComponent background;
 
-  @override
   Future<void> onLoad() async {
     super.onLoad();
-    final sprites = await fromJSONAtlas('spritesheet.png', 'spritesheet.json');
-    SpriteAnimation walk = SpriteAnimation.spriteList(sprites, stepTime: 0.3);
-    girl = SpriteAnimationComponent()
+    print('load assets');
+    //background
+    background = SpriteComponent()
+      ..sprite = await loadSprite('background.jpg')
+      ..size = size;
+    add(background);
+
+    // sprites
+    final spritesheet =
+        await fromJSONAtlas('spritesheet.png', 'spritesheet.json');
+    SpriteAnimation walk =
+        SpriteAnimation.spriteList(spritesheet, stepTime: .1);
+    girlWalking = SpriteAnimationComponent()
       ..animation = walk
-      ..position = Vector2(100, 100)
-      ..size = Vector2(200, 200);
-    add(girl);
+      ..position = Vector2(0, 30)
+      ..size = Vector2(100, 100);
+    add(girlWalking);
   }
 
-  @override
   void update(double dt) {
     super.update(dt);
-    // walk.update(dt);
-    girl.update(dt);
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    // walk.getSprite().render(canvas);
+    girlWalking.y += dt * 20;
+    girlWalking.x += dt * 20;
   }
 }
